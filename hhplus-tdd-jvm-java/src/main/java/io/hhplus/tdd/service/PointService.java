@@ -28,18 +28,11 @@ public class PointService {
     
 	
 	//유저 포인트 정보 조회
-    public UserPointResDTO getUserPoint(Long userId) {
+    public UserPointResDTO getUserPoint(Long userId) throws InterruptedException {
         
-        	UserPoint userPoint = null;
-			
-        	try {
-				userPoint = userPointTable.selectById(userId);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		
-        	return UserPointResDTO.of(userPoint);
+    	UserPoint userPoint = userPointTable.selectById(userId);
+		
+   		return UserPointResDTO.of(userPoint);
     }
 
     //유저 포인트 이력조회
@@ -47,79 +40,37 @@ public class PointService {
 		List<PointHistory> userPointHistories = pointHistoryTable.selectAllByUserId(userId);
 		List<PointHistoryResDTO> pointHistoryResDTOs = new ArrayList<>();
 		    
-		    for (PointHistory pointHistory : userPointHistories) {
-		        PointHistoryResDTO userPointHistoryResDTO = PointHistoryResDTO.of(pointHistory);
-		        pointHistoryResDTOs.add(userPointHistoryResDTO);
+		for (PointHistory pointHistory : userPointHistories) {
+			 PointHistoryResDTO userPointHistoryResDTO = PointHistoryResDTO.of(pointHistory);
+			 pointHistoryResDTOs.add(userPointHistoryResDTO);
 		    }
 		    
-		    return pointHistoryResDTOs;
+		return pointHistoryResDTOs;
 	}
+	
+	//유저 포인트 충전
+	public UserPoint chargeUserPoint(Long userId, Long amount) throws InterruptedException {
+		 
+		 UserPoint userPoint = userPointTable.selectById(userId);
+	     Long result = userPoint.point() + amount;
+	     return userPointTable.insertOrUpdate(userPoint.id(), result);
+	}
+	
 
 	//유저 포인트 사용
- 	public UserPointResDTO useUserPoint(Long userId, Long amount) {
-		
-		UserPoint userPoint = null;
-		
-		try {
-			userPoint = userPointTable.insertOrUpdate(userId, amount);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+ 	public UserPoint useUserPoint(Long userId, Long amount) throws InterruptedException {
+ 		UserPoint originUserPoint = userPointTable.selectById(userId);
+ 		
+ 		if (originUserPoint.point() < amount) {
+			throw new RuntimeException("Not enough points to use");
 		}
+ 		
+ 		Long result = originUserPoint.point() - amount;
+	     
+ 		return userPointTable.insertOrUpdate(originUserPoint.id(), result);
 		
-		return UserPointResDTO.of(userPoint);
 	}
-	
-  
-    
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-    
-    //유저 포인트 이력 조회
-//	public List<PointHistory> getUserPointHistories(Long id) {
-//		return pointRepository.getUserPointHistories(userId);
-//		return null;
-//	}
-    
-    
-//    
-//    // 포인트 이력 조회
-//    public List<PointHistory> getPointHistories(Long userId) {
-//        return pointRepository.findAllByUserId(userId);
-//    }
-//
-//    // 포인트 충전 기능
-//    public UserPoint chargePoint(Long userId, Long amount) {
-//        // 포인트 이력 추가
-//        PointHistory pointHistory = new PointHistory(null, userId, TransactionType.CHARGE, amount, System.currentTimeMillis());
-//        pointRepository.save(pointHistory);
-//        return null; 
-//
-//    }
+
+
 }
 

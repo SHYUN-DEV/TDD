@@ -24,10 +24,11 @@ public class PointController {
 	
     /**
      * TODO - 특정 유저의 포인트를 조회하는 기능을 작성해주세요.
+     * @throws InterruptedException 
      */
 	
 	 @GetMapping("{id}")
-	 public UserPointResDTO point(@PathVariable Long id) {
+	 public UserPointResDTO point(@PathVariable Long id) throws InterruptedException {
     	
     	return pointService.getUserPoint(id);
         
@@ -46,31 +47,26 @@ public class PointController {
     
     /**
      * TODO - 특정 유저의 포인트를 충전하는 기능을 작성해주세요.
+     * @throws InterruptedException 
      */
     @PatchMapping("{id}/charge")
-    public UserPointResDTO charge(
+    public UserPoint charge(
     						@PathVariable Long id,
-    						@RequestBody Long amount) {
+    						@RequestBody Long amount) throws InterruptedException {
         
-    	return pointService.useUserPoint(id, amount);
+    	return pointService.chargeUserPoint(id, amount);
     }
 
     
-    
-    
-    
-    
-    
-    
-    
     /**
      * TODO - 특정 유저의 포인트를 사용하는 기능을 작성해주세요.
+     * @throws InterruptedException 
      */
     @PatchMapping("{id}/use")
     public UserPoint use(
     					@PathVariable Long id,
-    					@RequestBody Long amount) {
-        
-    	return new UserPoint(0L, 0L, 0L);
+    					@RequestBody Long amount) throws InterruptedException {
+    	
+    	return pointService.useUserPoint(id, amount);
     }
 }
