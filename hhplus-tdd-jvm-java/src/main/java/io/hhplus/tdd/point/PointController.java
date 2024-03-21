@@ -51,7 +51,7 @@ public class PointController {
      */
     @PatchMapping("{id}/charge")
     public UserPoint charge(
-    						@PathVariable Long id,
+    						@PathVariable("id") Long id,
     						@RequestBody Long amount) throws InterruptedException {
         
     	return pointService.chargeUserPoint(id, amount);

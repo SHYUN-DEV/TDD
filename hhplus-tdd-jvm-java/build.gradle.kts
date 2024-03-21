@@ -36,25 +36,14 @@ dependencies {
 	implementation(libs.spring.boot.starter.web)
 	annotationProcessor(libs.spring.boot.configuration.processor)
 	testImplementation(libs.spring.boot.starter.test)
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.2")
+	
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
 	compileOnly(libs.lombok)
 	annotationProcessor(libs.lombok)
 
-	// JUnit5
-	testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.3.50")
 
-	// AssertJ
-	testImplementation("org.assertj:assertj-core:3.13.2")
-
-	// junit4, hamcrst 의존성 제거
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude(module = "junit")
-		exclude(module = "hamcrest-core")
-		exclude(module = "hamcrest-library")
-	}
+	
     
     
 }

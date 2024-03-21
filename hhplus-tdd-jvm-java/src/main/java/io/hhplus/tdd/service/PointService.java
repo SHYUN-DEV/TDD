@@ -1,6 +1,7 @@
 package io.hhplus.tdd.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.UserPoint;
+import io.hhplus.tdd.point.TransactionType;
 
 
 @Service
@@ -19,6 +21,7 @@ public class PointService {
 	
 	private final UserPointTable userPointTable;
 	private final PointHistoryTable pointHistoryTable;
+	Date updatedAt = new Date();
 
 	@Autowired
 	public PointService(UserPointTable userPointTable, PointHistoryTable pointHistoryTable) {
@@ -49,16 +52,18 @@ public class PointService {
 	}
 	
 	//유저 포인트 충전
-	public UserPoint chargeUserPoint(Long userId, Long amount) throws InterruptedException {
+	public UserPoint chargeUserPoint(Long id, Long amount) throws InterruptedException {
 		 
-		 UserPoint userPoint = userPointTable.selectById(userId);
+		 UserPoint userPoint = userPointTable.selectById(id);
 	     Long result = userPoint.point() + amount;
+	     pointHistoryTable.insert(id, result, TransactionType.CHARGE, updatedAt.getTime());
 	     return userPointTable.insertOrUpdate(userPoint.id(), result);
 	}
 	
 
 	//유저 포인트 사용
  	public UserPoint useUserPoint(Long userId, Long amount) throws InterruptedException {
+ 		
  		UserPoint originUserPoint = userPointTable.selectById(userId);
  		
  		if (originUserPoint.point() < amount) {
@@ -66,6 +71,7 @@ public class PointService {
 		}
  		
  		Long result = originUserPoint.point() - amount;
+ 		pointHistoryTable.insert(userId, result, TransactionType.USE, updatedAt.getTime());
 	     
  		return userPointTable.insertOrUpdate(originUserPoint.id(), result);
 		
