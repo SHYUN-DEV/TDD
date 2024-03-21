@@ -51,33 +51,33 @@ public class PointControllerTest {
         // 테스트 전에 필요한 초기화 작업 수행
     }
 
-//    // 유저의 포인트 조회 테스트
-//    @Test
-//    @DisplayName(value = "유저 포인트 조회")
-//    public void testGetUserPoint() throws Exception {
-//        UserPointResDTO userPointResDTO = new UserPointResDTO(1L, 100L, System.currentTimeMillis());
-//        when(pointService.getUserPoint(anyLong())).thenReturn(userPointResDTO);
-//
-//        mockMvc.perform(get("/point/{id}", 1L))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(1L))
-//                .andExpect(jsonPath("$.point").value(100L));
-//    }
-//
-//    // 유저의 포인트 내역(충전/이용) 조회 테스트
-//    @Test
-//    @DisplayName(value = "유저 포인트내역 조회")
-//    public void testGetUserPointHistories() throws Exception {
-//        PointHistoryResDTO pointHistoryResDTO = new PointHistoryResDTO(1L, 100L, TransactionType.CHARGE, System.currentTimeMillis(), null);
-//        when(pointService.getUserPointHistories(anyLong())).thenReturn(Collections.singletonList(pointHistoryResDTO));
-//
-//        mockMvc.perform(get("/point/{id}/histories", 1L))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].id").value(1L))
-//                .andExpect(jsonPath("$[0].point").value(100L))
-//                .andExpect(jsonPath("$[0].type").value(TransactionType.CHARGE.toString()))
-//                .andExpect(jsonPath("$[0].amount").value(100L));
-//    }
+    // 유저의 포인트 조회 테스트
+    @Test
+    @DisplayName(value = "유저 포인트 조회")
+    public void testGetUserPoint() throws Exception {
+        UserPointResDTO userPointResDTO = new UserPointResDTO(1L, 100L, System.currentTimeMillis());
+        when(pointService.getUserPoint(anyLong())).thenReturn(userPointResDTO);
+
+        mockMvc.perform(get("/point/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.point").value(100L));
+    }
+
+    // 유저의 포인트 내역(충전/이용) 조회 테스트
+    @Test
+    @DisplayName(value = "유저 포인트내역 조회")
+    public void testGetUserPointHistories() throws Exception {
+        PointHistoryResDTO pointHistoryResDTO = new PointHistoryResDTO(1L, 100L, TransactionType.CHARGE, System.currentTimeMillis(), null);
+        when(pointService.getUserPointHistories(anyLong())).thenReturn(Collections.singletonList(pointHistoryResDTO));
+
+        mockMvc.perform(get("/point/{id}/histories", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].point").value(100L))
+                .andExpect(jsonPath("$[0].type").value(TransactionType.CHARGE.toString()))
+                .andExpect(jsonPath("$[0].amount").value(100L));
+    }
 
     // 포인트 충전 테스트
     @Test
@@ -99,26 +99,26 @@ public class PointControllerTest {
         verify(pointService).chargeUserPoint(userId, amount);
     }
 
-//    //포인트 사용 테스트
-//    @Test
-//    @DisplayName(value = "포인트 사용 테스트")
-//    public void testUseUserPoint() throws Exception {
-//        Long userId = 1L;
-//        Long amount = 30L;
-//        UserPoint expectedResult = new UserPoint(userId, 70L, System.currentTimeMillis()); // 예상 결과
-//
-//        when(pointService.useUserPoint(userId, amount)).thenReturn(expectedResult);
-//
-//        mockMvc.perform(patch("/point/{id}/use", userId)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(amount.toString()))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(userId))
-//                .andExpect(jsonPath("$.point").value(expectedResult.point()));
-//
-//        // Verify that the service method was called with the correct arguments
-//        verify(pointService).useUserPoint(userId, amount);
-//    }
+    //포인트 사용 테스트
+    @Test
+    @DisplayName(value = "포인트 사용 테스트")
+    public void testUseUserPoint() throws Exception {
+        Long userId = 1L;
+        Long amount = 30L;
+        UserPoint expectedResult = new UserPoint(userId, 70L, System.currentTimeMillis()); // 예상 결과
+
+        when(pointService.useUserPoint(userId, amount)).thenReturn(expectedResult);
+
+        mockMvc.perform(patch("/point/{id}/use", userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(amount.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.point").value(expectedResult.point()));
+
+        // Verify that the service method was called with the correct arguments
+        verify(pointService).useUserPoint(userId, amount);
+    }
 }
 
 
