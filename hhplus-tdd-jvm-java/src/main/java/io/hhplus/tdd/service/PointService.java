@@ -18,18 +18,18 @@ import io.hhplus.tdd.point.TransactionType;
 @Service
 public class PointService {
 	
-	private final UserPointTable userPointTable;
-	private final PointHistoryTable pointHistoryTable;
+    private final UserPointTable userPointTable;
+    private final PointHistoryTable pointHistoryTable;
 	
 
-	@Autowired
-	public PointService(UserPointTable userPointTable, PointHistoryTable pointHistoryTable) {
-		this.userPointTable = userPointTable;
-		this.pointHistoryTable = pointHistoryTable;
-	}
+    @Autowired
+    public PointService(UserPointTable userPointTable, PointHistoryTable pointHistoryTable) {
+    	this.userPointTable = userPointTable;
+	this.pointHistoryTable = pointHistoryTable;
+    }
     
-	
-	//유저 포인트 정보 조회
+     
+    //유저 포인트 정보 조회
     public UserPointResDTO getUserPoint(Long userId) throws InterruptedException {
         
     	UserPoint userPoint = userPointTable.selectById(userId);
@@ -38,7 +38,7 @@ public class PointService {
     }
 
     //유저 포인트 이력조회
-	public List<PointHistoryResDTO> getUserPointHistories(Long userId) {
+    public List<PointHistoryResDTO> getUserPointHistories(Long userId) {
 		List<PointHistory> userPointHistories = pointHistoryTable.selectAllByUserId(userId);
 		List<PointHistoryResDTO> pointHistoryResDTOs = new ArrayList<>();
 		    
@@ -48,10 +48,10 @@ public class PointService {
 		    }
 		    
 		return pointHistoryResDTOs;
-	}
+    }
 	
-	//유저 포인트 충전
-	public UserPoint chargeUserPoint(Long id, Long amount) throws InterruptedException {
+    //유저 포인트 충전
+    public UserPoint chargeUserPoint(Long id, Long amount) throws InterruptedException {
 		 
 		 UserPoint userPoint = userPointTable.selectById(id);
 	     Long result = userPoint.point() + amount;
@@ -59,11 +59,11 @@ public class PointService {
 	     
 	     pointHistoryTable.insert(id, result, TransactionType.CHARGE, System.currentTimeMillis());
 	     return userPointTable.insertOrUpdate(userPoint.id(), result);
-	}
+    }
 	
-
-	//유저 포인트 사용
- 	public UserPoint useUserPoint(Long userId, Long amount) throws InterruptedException {
+     
+    //유저 포인트 사용
+    public UserPoint useUserPoint(Long userId, Long amount) throws InterruptedException {
  		
  		UserPoint originUserPoint = userPointTable.selectById(userId);
  		
@@ -77,7 +77,7 @@ public class PointService {
 	     
  		return userPointTable.insertOrUpdate(originUserPoint.id(), result);
 		
-	}
+     }
 
 
 }
