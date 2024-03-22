@@ -1,7 +1,6 @@
 package io.hhplus.tdd.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ public class PointService {
 	
 	private final UserPointTable userPointTable;
 	private final PointHistoryTable pointHistoryTable;
-	Date updatedAt = new Date();
+	
 
 	@Autowired
 	public PointService(UserPointTable userPointTable, PointHistoryTable pointHistoryTable) {
@@ -56,7 +55,9 @@ public class PointService {
 		 
 		 UserPoint userPoint = userPointTable.selectById(id);
 	     Long result = userPoint.point() + amount;
-	     pointHistoryTable.insert(id, result, TransactionType.CHARGE, updatedAt.getTime());
+	    
+	     
+	     pointHistoryTable.insert(id, result, TransactionType.CHARGE, System.currentTimeMillis());
 	     return userPointTable.insertOrUpdate(userPoint.id(), result);
 	}
 	
@@ -66,12 +67,13 @@ public class PointService {
  		
  		UserPoint originUserPoint = userPointTable.selectById(userId);
  		
+ 		
  		if (originUserPoint.point() < amount) {
 			throw new RuntimeException("Not enough points to use");
 		}
  		
  		Long result = originUserPoint.point() - amount;
- 		pointHistoryTable.insert(userId, result, TransactionType.USE, updatedAt.getTime());
+ 		pointHistoryTable.insert(userId, result, TransactionType.USE, System.currentTimeMillis());
 	     
  		return userPointTable.insertOrUpdate(originUserPoint.id(), result);
 		
